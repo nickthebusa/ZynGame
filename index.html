@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://kit.fontawesome.com/d37105f83f.js" crossorigin="anonymous"></script>
+    <title></title>
+    <link href="style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="game">
+      <div class="health-div">
+        <div class="health-amount">100</div>
+        <div class="health-bar">
+          <div class="health-bar-amount"></div>
+        </div>
+      </div>
+      <canvas class="game-canvas" width="400" height="600"></canvas>
+      <div class="controls">
+        <div class="move-direction">
+          <i id="w" class="fa-solid fa-square-caret-up"></i>
+          <div>
+            <i id="a" class="fa-solid fa-square-caret-left"></i>
+            <i id="s" class="fa-solid fa-square-caret-down"></i>
+            <i id="d" class="fa-solid fa-square-caret-right"></i>
+          </div>
+        </div>
+        <i class="fa-solid fa-bullseye" id="Enter"></i>
+        <div class="shoot-direction">
+          <i id="ArrowUp" class="fa-solid fa-circle-chevron-up"></i>
+          <div>
+            <i id="ArrowLeft" class="fa-solid fa-circle-chevron-left"></i>
+            <i id="ArrowDown" class="fa-solid fa-circle-chevron-down"></i>
+            <i id="ArrowRight" class="fa-solid fa-circle-chevron-right"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <img src="zyn.webp" class="enemy-pic" style="display: none">
+    <script src="game.js"></script>
+  </body>
+</html>

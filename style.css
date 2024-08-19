@@ -1,0 +1,97 @@
+body {
+  margin: 0 auto;
+  padding: 0;
+  background-color: #242e54;
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.game {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.game-canvas {
+  border: 3px solid #50aaff;
+  border-radius: 3px;
+}
+
+.health-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px;
+}
+
+.health-bar {
+  width: 150px;
+  height: 10px;
+  border: 1px solid #ff0000;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.health-bar-amount {
+  background-color: #ff0000;
+  height: 100%;
+}
+
+.health-amount {
+  font-size: 20px;
+  color: #ffffff;
+  font-family: monospace;
+  margin-right: 1rem;
+}
+
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0.5rem 0 0 0;
+}
+
+.move-direction, .shoot-direction {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.move-direction div, .shoot-direction div {
+  display: flex;
+  flex-direction: row;
+}
+
+#w, #a, #s, #d {
+  margin: 0 0.2rem;
+  font-size: 3.5rem;
+}
+
+#ArrowUp, #ArrowLeft, #ArrowRight, #ArrowDown {
+  margin: 0.2rem;
+  font-size: 3rem;
+}
+
+#w:hover, #a:hover, #s:hover, #d:hover,
+#ArrowUp:hover, #ArrowLeft:hover, #ArrowRight:hover, #ArrowDown:hover
+{
+  cursor: pointer;
+  color: #50aaff;
+}
+
+#Enter:hover {
+  cursor: pointer;
+  color: #50aaff;
+}
+#Enter {
+  font-size: 3.5rem;
+}
+
+@media (max-width: 500px) {
+  .game {
+    width: 100vw;
+  }
+}
