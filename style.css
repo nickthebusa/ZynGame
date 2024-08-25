@@ -18,7 +18,13 @@ body {
   border-radius: 3px;
 }
 
-.health-div {
+.game-stats {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.health-div, .power-div {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -26,26 +32,35 @@ body {
   margin: 10px;
 }
 
-.health-bar {
+.health-bar, .power-bar {
   width: 150px;
   height: 10px;
   border: 1px solid #ff0000;
   border-radius: 1rem;
   overflow: hidden;
 }
+.power-bar {
+  border: 1px solid #00ffee;
+}
 
-.health-bar-amount {
+.health-bar-amount, .power-bar-amount {
   background-color: #ff0000;
   height: 100%;
 }
+.power-bar-amount {
+  background-color: #00ffee;
+}
 
-.health-amount {
+.health-amount, .power-amount {
   font-size: 20px;
   color: #ffffff;
   font-family: monospace;
   margin-right: 1rem;
+  padding: 0 1rem;
 }
-
+.power-amount {
+  margin: 0 0 0 1rem;
+}
 
 .controls {
   display: flex;

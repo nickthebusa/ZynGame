@@ -1,6 +1,13 @@
 const WIDTH = 400;
 const HEIGHT = 600;
 
+// TODO
+// - fix layout shift when the game values change decimal places
+// - test responsiveness with screen sizes and mobile
+// - change upgrading speed to upgrade fire rate
+// - add explosion or effect to kiling enemy
+// - introduce a new enemy type after a certain power level has been reached
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const canvas = document.querySelector('.game-canvas');
@@ -9,12 +16,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const healthAmount = document.querySelector('.health-amount');
   const healthBarAmount = document.querySelector('.health-bar-amount');
 
+  const powerBar = document.querySelector('.power-amount');
+  const powerBarAmount = document.querySelector('.power-bar-amount');
+  powerBarAmount.style.width = "0%";
+
   const enemyPic = document.querySelector('.enemy-pic');
 
   const upButton = document.querySelector("#w");
   const leftButton = document.querySelector("#a");
   const downButton = document.querySelector("#s");
   const rightButton = document.querySelector("#d");
+
+  const fruitMain = document.querySelector(".fruit-pic");
 
   class Input {
     constructor() {
@@ -26,21 +39,25 @@ document.addEventListener("DOMContentLoaded", () => {
         "Enter": false
       }
       window.addEventListener('keydown', e => {
+        e.preventDefault();
         if (this.controls[e.key] === false) {
           this.controls[e.key] = true;
         }
       })
       window.addEventListener('keyup', e => {
+        e.preventDefault();
         if (this.controls[e.key] === true) {
           this.controls[e.key] = false;
         }
       })
       window.addEventListener("touchstart", (e) => {
+        e.preventDefault();
         if (this.controls[e.target.id] === false) {
           this.controls[e.target.id] = true;
         }
       })
       window.addEventListener("touchend", (e) => {
+        e.preventDefault();
         if (this.controls[e.target.id] === true) {
           this.controls[e.target.id] = false;
         }
@@ -63,14 +80,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   class Shot {
-    constructor(x, y, direction) {
+    constructor(x, y, direction, shotSpeed) {
       this.width = 5;
       this.height = 13;
       this.direction = direction;
       this.color = "#000000";
       this.x = x;
       this.y = y;
-      this.speed = 10;
+      this.speed = shotSpeed;
     }
     draw(ctx) {
       ctx.fillStyle = this.color;
@@ -115,6 +132,8 @@ document.addEventListener("DOMContentLoaded", () => {
       this.activeShots = [];
       this.health = 100;
       this.shootDirection = "up";
+      this.power = 0;
+      this.shotSpeed = 5;
     }
 
     draw(ctx) {
@@ -169,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (this.shotBuffer === 0 && input.controls["Enter"]) {
         this.shotBuffer = 10;
         // create shot
-        const sh = new Shot(this.x + (this.width / 2), this.y, this.shootDirection);
+        const sh = new Shot(this.x + (this.width / 2), this.y, this.shootDirection, this.shotSpeed);
         this.activeShots.push(sh);
       }
       if (this.shotBuffer !== 0) {
@@ -189,13 +208,25 @@ document.addEventListener("DOMContentLoaded", () => {
           healthBarAmount.style.width = `${this.health}%`;
           // enemy dies on hit
           enemies1.splice(enemies1.indexOf(en), 1);
-          if (this.health === 0) {
+          if (this.health <= 0) {
             healthAmount.innerText = "💀";
             // TODO - restart functionality
           }
         }
       }
 
+    }
+    upgrade() {
+      // update player power
+      if (player.power >= 100) {
+        player.shotSpeed += 5;
+        player.health = 100;
+        player.power = 0;
+      } else {
+        player.power += 10;
+      }
+      powerBar.innerText = player.power;
+      powerBarAmount.style.width = `${this.power}`;
     }
   }
 
@@ -244,10 +275,61 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  class Fruit {
+    constructor(vectorImg, player) {
+      this.player = player;
+      this.width = 30;
+      this.height = 30;
+      this.x = Math.floor(Math.random() * (WIDTH - this.width));
+      this.y = Math.floor(Math.random() * (HEIGHT - this.height));
+      this.vectorImg = vectorImg;
+      this.widthPics = 4;
+      this.heightPics = 4;
+      this.picCoords = this.calculatePic();
+      this.consumed = false;
+    }
+    calculatePic() {
+      const arr = [];
+      const w = this.vectorImg.width / this.widthPics;
+      const h = this.vectorImg.height / this.heightPics;
+      for (let y = 0; y < this.vectorImg.height; y += h) {
+        for (let x = 0; x < this.vectorImg.width; x += w) {
+          arr.push({ x: x, y: y });
+        }
+      }
+      const randomIndex = Math.floor(Math.random() * arr.length);
+      return arr[randomIndex];
+    }
+    draw(ctx) {
+      ctx.drawImage(
+        this.vectorImg,
+        this.picCoords.x,
+        this.picCoords.y,
+        this.vectorImg.width / this.widthPics,
+        this.vectorImg.height / this.heightPics,
+        this.x,
+        this.y,
+        this.width,
+        this.height
+      );
+    }
+    update() {
+      if (
+        this.x + (this.width / 2) <= this.player.x + this.player.width &&
+        this.x + (this.width / 2) >= this.player.x &&
+        this.y + (this.height / 2) <= this.player.y + this.player.height &&
+        this.y + (this.height / 2) >= this.player.y
+      ) {
+        this.consumed = true;
+      }
+    }
+  }
 
   const bg = new Background();
   const player = new Player();
   const input = new Input();
+
+  let currentFruit = new Fruit(fruitMain, player);
 
   const enemies1 = [];
   const MAX_ENEMIES = 10;
@@ -296,6 +378,14 @@ document.addEventListener("DOMContentLoaded", () => {
         enemies1.splice(enemies1.indexOf(enmy), 1);
       }
     }
+
+    // fruits spawn
+    if (currentFruit.consumed) {
+      currentFruit = new Fruit(fruitMain, player);
+      player.upgrade();
+    }
+    currentFruit.update();
+    currentFruit.draw(ctx);
 
     requestAnimationFrame(animate);
   }
